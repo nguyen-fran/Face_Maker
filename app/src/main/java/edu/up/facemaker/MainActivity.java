@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     String[] hairstyles = {"Bald", "Buzzcut", "Man-bun", "Bowl cut", "Mullet", "Dreadlocks"};
 
     private Spinner hairstyleSpinner;
+    private Face faceView;
+    private FaceController faceController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> hairstyleAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, this.hairstyles);
         hairstyleSpinner.setAdapter(hairstyleAdapter);
+
+        faceView = findViewById(R.id.faceSurfaceView);
+        faceController = new FaceController(faceView);
 
     }
 }

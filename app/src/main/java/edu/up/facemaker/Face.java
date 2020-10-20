@@ -23,14 +23,14 @@ public class Face extends SurfaceView {
     private int hairColor;
     private int hairStyle; //identifies what hairstyle face has
 
-    Paint skinColorPaint = new Paint();
-    Paint eyeColorPaint = new Paint();
-    Paint hairColorPaint = new Paint();
+    private Paint skinColorPaint = new Paint();
+    private Paint eyeColorPaint = new Paint();
+    private Paint hairColorPaint = new Paint();
 
-    Paint blackPaint = new Paint();
-    Paint whitePaint = new Paint();
+    private Paint blackPaint = new Paint();
+    private Paint whitePaint = new Paint();
 
-    private static final int MAX_RGB_VALUE = 255;
+    public static final int MAX_RGB_VALUE = 255;
     private static final float faceMargin = 50.0f;
     private static final float faceHeight = 900.0f;
     private static final float faceWidth = 800.0f;
@@ -39,14 +39,12 @@ public class Face extends SurfaceView {
     private static final float irisRadius = 45.0f;
     private static final float pupilRadius = 22.5f;
 
-    Paint red = new Paint();
-
     public Face(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         setWillNotDraw(false);
         setBackgroundColor(Color.WHITE);
 
-        randomize();
+        randomizeColors();
 
         skinColorPaint.setColor(skinColor);
         eyeColorPaint.setColor(eyeColor);
@@ -57,15 +55,26 @@ public class Face extends SurfaceView {
         whitePaint.setColor(0xFFFFFFFF);
     }
 
-    //sets instance variables to random values
-    public void randomize() {
+    /**
+     * Sets skin, eye, and hair color to random color values
+     */
+    public void randomizeColors() {
         Random rand = new Random();
 
-        skinColor = Color.rgb(rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1));
-        eyeColor = Color.rgb(rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1));
-        hairColor = Color.rgb(rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1));
+        skinColor = Color.argb(MAX_RGB_VALUE, rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1));
+        eyeColor = Color.argb(MAX_RGB_VALUE, rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1));
+        hairColor = Color.argb(MAX_RGB_VALUE, rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1), rand.nextInt(MAX_RGB_VALUE + 1));
+
+        skinColorPaint.setColor(skinColor);
+        eyeColorPaint.setColor(eyeColor);
+        hairColorPaint.setColor(hairColor);
     }
 
+    /**
+     * Draws a face.
+     *
+     * @param canvas    the canvas to draw on
+     */
     @Override
     public void onDraw(Canvas canvas) {
         float[] headCenter = {faceWidth / 2 + faceMargin, faceHeight / 2 + 2.5f * faceMargin};
@@ -80,6 +89,12 @@ public class Face extends SurfaceView {
         drawEyes(canvas, headCenter);
     }
 
+    /**
+     * Helper method for onDraw. Draws the eyes of the face.
+     *
+     * @param canvas        the canvas to draw on
+     * @param headCenter    coordinates so that the eyes can be drawn relative to the center of the face
+     */
     private void drawEyes(Canvas canvas, float[] headCenter) {
         float[] leftEyeCenter = {headCenter[0] - faceWidth / 4, headCenter[1] - faceHeight / 6};
         float[] rightEyeCenter = {headCenter[0] + faceWidth / 4, headCenter[1] - faceHeight / 6};
@@ -96,4 +111,30 @@ public class Face extends SurfaceView {
 
     }
 
+    public int getHairColor() {
+        return hairColor;
+    }
+
+    public int getEyeColor() {
+        return eyeColor;
+    }
+
+    public int getSkinColor() {
+        return skinColor;
+    }
+
+    public void setHairColor(int hairColor) {
+        this.hairColor = hairColor;
+        hairColorPaint.setColor(this.hairColor);
+    }
+
+    public void setEyeColor(int eyeColor) {
+        this.eyeColor = eyeColor;
+        eyeColorPaint.setColor(this.eyeColor);
+    }
+
+    public void setSkinColor(int skinColor) {
+        this.skinColor = skinColor;
+        skinColorPaint.setColor(this.skinColor);
+    }
 }

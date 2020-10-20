@@ -5,7 +5,8 @@ import android.widget.AdapterView;
 import android.widget.SeekBar;
 
 public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, AdapterView.OnItemSelectedListener {
-    Face faceView;
+
+    private Face faceView;
 
     public FaceController(Face faceView) {
         this.faceView = faceView;
@@ -37,7 +38,7 @@ public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarCh
             default:
                 break;
         }
-
+        faceView.invalidate();
     }
 
     @Override

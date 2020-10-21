@@ -63,36 +63,39 @@ public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarCh
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
+        //not using
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean userClicked) {
+        if (!userClicked) {
+            return;
+        }
+
         if (whichRadioButton == HAIR && seekBar.getId() == R.id.redSeekBar) {
-            Log.i("seekbar change", "changing red bar for hair");
             faceView.setHairColor(Color.argb(Face.MAX_RGB_VALUE, progress, Color.green(faceView.getHairColor()), Color.blue(faceView.getHairColor())));
         } else if (whichRadioButton == HAIR && seekBar.getId() == R.id.greenSeekBar) {
             faceView.setHairColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getHairColor()), progress, Color.blue(faceView.getHairColor())));
         } else if (whichRadioButton == HAIR && seekBar.getId() == R.id.blueSeekBar) {
             faceView.setHairColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getHairColor()), Color.green(faceView.getHairColor()), progress));
         } else if (whichRadioButton == EYES && seekBar.getId() == R.id.redSeekBar) {
-            faceView.setEyeColor(Color.argb(Face.MAX_RGB_VALUE, progress, Color.green(faceView.getHairColor()), Color.blue(faceView.getHairColor())));
+            faceView.setEyeColor(Color.argb(Face.MAX_RGB_VALUE, progress, Color.green(faceView.getEyeColor()), Color.blue(faceView.getEyeColor())));
         } else if (whichRadioButton == EYES && seekBar.getId() == R.id.greenSeekBar) {
-            faceView.setEyeColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getHairColor()), progress, Color.blue(faceView.getHairColor())));
+            faceView.setEyeColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getEyeColor()), progress, Color.blue(faceView.getEyeColor())));
         } else if (whichRadioButton == EYES && seekBar.getId() == R.id.blueSeekBar) {
-            faceView.setEyeColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getHairColor()), Color.green(faceView.getHairColor()), progress));
+            faceView.setEyeColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getEyeColor()), Color.green(faceView.getEyeColor()), progress));
         } else if (whichRadioButton == SKIN && seekBar.getId() == R.id.redSeekBar) {
-            faceView.setSkinColor(Color.argb(Face.MAX_RGB_VALUE, progress, Color.green(faceView.getHairColor()), Color.blue(faceView.getHairColor())));
+            faceView.setSkinColor(Color.argb(Face.MAX_RGB_VALUE, progress, Color.green(faceView.getSkinColor()), Color.blue(faceView.getSkinColor())));
         } else if (whichRadioButton == SKIN && seekBar.getId() == R.id.greenSeekBar) {
-            faceView.setSkinColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getHairColor()), progress, Color.blue(faceView.getHairColor())));
+            faceView.setSkinColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getSkinColor()), progress, Color.blue(faceView.getSkinColor())));
         } else if (whichRadioButton == SKIN && seekBar.getId() == R.id.blueSeekBar) {
-            faceView.setSkinColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getHairColor()), Color.green(faceView.getHairColor()), progress));
+            faceView.setSkinColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getSkinColor()), Color.green(faceView.getSkinColor()), progress));
         } else {
             return;
         }

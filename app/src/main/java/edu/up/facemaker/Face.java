@@ -11,6 +11,8 @@ import androidx.annotation.ColorInt;
 
 import java.util.Random;
 
+import static android.graphics.Paint.Style.FILL;
+
 /**
  * A class that contains the data for the face that will be shown in the SurfaceView
  *
@@ -49,6 +51,7 @@ public class Face extends SurfaceView {
         skinColorPaint.setColor(skinColor);
         eyeColorPaint.setColor(eyeColor);
         hairColorPaint.setColor(hairColor);
+        hairColorPaint.setStyle(FILL);
 
         blackPaint.setColor(0xFF000000);
         blackPaint.setStrokeWidth(4.0f);

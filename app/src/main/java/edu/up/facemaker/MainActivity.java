@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton hairRadioButton;
     private RadioButton eyesRadioButton;
     private RadioButton skinRadioButton;
-    private SeekBar redSeekbar;
+    private SeekBar redSeekBar;
     private SeekBar greenSeekBar;
     private SeekBar blueSeekBar;
 
@@ -48,12 +48,16 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item, this.hairstyles);
         hairstyleSpinner.setAdapter(hairstyleAdapter);
 
-        redSeekbar = findViewById(R.id.redSeekBar);
+        redSeekBar = findViewById(R.id.redSeekBar);
         greenSeekBar = findViewById(R.id.greenSeekBar);
         blueSeekBar = findViewById(R.id.blueSeekBar);
 
         faceView = findViewById(R.id.faceSurfaceView);
-        faceController = new FaceController(faceView, redSeekbar, greenSeekBar, blueSeekBar);
+        faceController = new FaceController(faceView, redSeekBar, greenSeekBar, blueSeekBar);
+
+        redSeekBar.setOnSeekBarChangeListener(faceController);
+        greenSeekBar.setOnSeekBarChangeListener(faceController);
+        blueSeekBar.setOnSeekBarChangeListener(faceController);
 
         randomFaceButton = findViewById(R.id.randomFaceButton);
         randomFaceButton.setOnClickListener(faceController);
@@ -65,5 +69,6 @@ public class MainActivity extends AppCompatActivity {
         skinRadioButton = findViewById(R.id.skinRadioButton);
         skinRadioButton.setOnClickListener(faceController);
 
+        hairstyleSpinner.setOnItemSelectedListener(faceController);
     }
 }

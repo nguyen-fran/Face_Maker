@@ -9,11 +9,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
 
-import androidx.annotation.ColorInt;
-
 import java.util.Random;
-
-import static android.graphics.Paint.Style.FILL;
 
 /**
  * A class that contains the data for the face that will be shown in the SurfaceView
@@ -21,7 +17,6 @@ import static android.graphics.Paint.Style.FILL;
  * @author Francisco Nguyen
  */
 public class Face extends SurfaceView {
-    @ColorInt
     private int skinColor;
     private int eyeColor;
     private int hairColor;
@@ -44,28 +39,43 @@ public class Face extends SurfaceView {
     private static final float pupilRadius = 22.5f;
     private static final float afroRadius = 30.0f;
 
+    private float[][] afroPoints;
+    //the center point of the face that will be drawn on a surfaceview
+    private float[] headCenter = {faceWidth / 2f + faceMargin, faceHeight / 2f + 5.0f * faceMargin};
+
+    /**
+     * constructor
+     *
+     * @param context
+     * @param attributeSet
+     */
     public Face(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         setWillNotDraw(false);
         setBackgroundColor(Color.WHITE);
 
-        randomizeColors();
+        randomizeFace();
+
+        hairStyle = 0;
 
         skinColorPaint.setColor(skinColor);
         eyeColorPaint.setColor(eyeColor);
         hairColorPaint.setColor(hairColor);
         hairColorPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        //hairColorPaint.setStrokeWidth(5.0f);
 
         blackPaint.setColor(Color.BLACK);
         blackPaint.setStrokeWidth(4.0f);
         whitePaint.setColor(Color.WHITE);
+
+        //setting up balls for the afro hairstyle
+        afroPoints = new float[750][2];
+        setAfroBallCoords();
     }
 
     /**
      * Sets skin, eye, and hair color to random color values
      */
-    public void randomizeColors() {
+    public void randomizeFace() {
         Random rand = new Random();
 
         /**
@@ -85,16 +95,17 @@ public class Face extends SurfaceView {
         skinColorPaint.setColor(skinColor);
         eyeColorPaint.setColor(eyeColor);
         hairColorPaint.setColor(hairColor);
+
+        hairStyle = rand.nextInt(4);
     }
 
     /**
-     * Draws a face.
+     * Draws a face with a nose, a mouth, eyes, and hair
      *
      * @param canvas    the canvas to draw on
      */
     @Override
     public void onDraw(Canvas canvas) {
-        float[] headCenter = {faceWidth / 2f + faceMargin, faceHeight / 2f + 5.0f * faceMargin};
         //drawing head
         canvas.drawOval(headCenter[0] - faceWidth / 2f, headCenter[1] + faceHeight / 2f, headCenter[0] + faceWidth / 2f, headCenter[1] - faceHeight / 2f, skinColorPaint);
         //drawing nose
@@ -103,20 +114,33 @@ public class Face extends SurfaceView {
         //drawing mouth
         canvas.drawLine(headCenter[0] - faceWidth / 4f, headCenter[1] + 4f * faceMargin, headCenter[0] + faceWidth / 4f, headCenter[1] + 4f * faceMargin, blackPaint);
 
-        drawEyes(canvas, headCenter);
+        //drawing eyes
+        drawEyes(canvas);
 
-        //drawSpikesHair(canvas, headCenter);
-        //drawBowlCutHair(canvas, headCenter);
-        drawAfro(canvas, headCenter);
+        //drawing hair
+        switch (hairStyle) {
+            case 0:
+                drawAfro(canvas);
+                break;
+            case 1:
+                break;
+            case 2:
+                drawBowlCutHair(canvas);
+                break;
+            case 3:
+                drawSpikesHair(canvas);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
      * Helper method for onDraw. Draws the eyes of the face.
      *
-     * @param canvas        the canvas to draw on
-     * @param headCenter    coordinates so that the eyes can be drawn relative to the center of the face
+     * @param canvas    the canvas to draw on
      */
-    private void drawEyes(Canvas canvas, float[] headCenter) {
+    private void drawEyes(Canvas canvas) {
         float[] leftEyeCenter = {headCenter[0] - faceWidth / 4f, headCenter[1] - faceHeight / 6f};
         float[] rightEyeCenter = {headCenter[0] + faceWidth / 4f, headCenter[1] - faceHeight / 6f};
 
@@ -134,10 +158,10 @@ public class Face extends SurfaceView {
     /**
      * Helper method for onDraw. Draws the bowl haircut option.
      *
-     * @param canvas        the canvas to draw on
-     * @param headCenter    coordinates so that the eyes can be drawn relative to the center of the face
+     * @param canvas    the canvas to draw on
      */
-    private void drawBowlCutHair(Canvas canvas, float[] headCenter) {
+    private void drawBowlCutHair(Canvas canvas) {
+        //making the floats to use as params for a RectF object
         float topLeftX = headCenter[0] - (faceWidth / 2f);
         float topLeftY = headCenter[1] - (faceHeight / 2f) - (2f * faceMargin);
         float bottomRightX = headCenter[0] + (faceWidth / 2f);
@@ -159,16 +183,19 @@ public class Face extends SurfaceView {
      * Helper method for onDraw. Draws the spiky hair option. Starts drawing the spikes at the bottom
      * left of the hair.
      *
-     * @param canvas        the canvas to draw on
-     * @param headCenter    coordinates so that the eyes can be drawn relative to the center of the face
+     * @param canvas    the canvas to draw on
      */
-    private void drawSpikesHair(Canvas canvas, float[] headCenter) {
+    private void drawSpikesHair(Canvas canvas) {
+        //size of hairstyle
         float hairWidth = faceWidth - (2.5f * faceMargin);
         float hairHeight = 8.5f * faceMargin;
 
         //coordinates for where to start the path
         float x = headCenter[0] - (faceWidth / 2f) + (1.25f * faceMargin);
         float y = headCenter[1] - (faceHeight / 4f);
+
+        //number of spikes hair is made of
+        int spikes = 10;
 
         /**
          * External Citation
@@ -180,51 +207,49 @@ public class Face extends SurfaceView {
          */
         Path hair = new Path();
         hair.moveTo(x, y);
-        hair.lineTo(x + hairWidth * 1f / 10f, y - hairHeight);
-        hair.lineTo(x + hairWidth * 2f / 10f, y - hairHeight + 4f * faceMargin);
-        hair.lineTo(x + hairWidth * 3f / 10f, y - hairHeight);
-        hair.lineTo(x + hairWidth * 4f / 10f, y - hairHeight + 4f * faceMargin);
-        hair.lineTo(x + hairWidth * 5f / 10f, y - hairHeight);
-        hair.lineTo(x + hairWidth * 6f / 10f, y - hairHeight + 4f * faceMargin);
-        hair.lineTo(x + hairWidth * 7f / 10f, y - hairHeight);
-        hair.lineTo(x + hairWidth * 8f / 10f, y - hairHeight + 4f * faceMargin);
-        hair.lineTo(x + hairWidth * 9f / 10f, y - hairHeight);
-        hair.lineTo(x + hairWidth * 10f / 10f, y);
+        for (int i = 1; i < spikes * 2; i += 2) {
+            hair.lineTo(x + (hairWidth * (i / (spikes * 2f))), y - hairHeight);
+            //skipping last line the for loop would make to later draw a special final line to the path
+            if (i + 1 >= spikes * 2)
+                break;
+            hair.lineTo(x + (hairWidth * ((i + 1) / (spikes * 2f))), y - hairHeight + 4.25f * faceMargin);
+        }
+        hair.lineTo(x + hairWidth, y);
         hair.close();
 
         canvas.drawPath(hair, hairColorPaint);;
     }
 
-    private void drawAfro(Canvas canvas, float[] headCenter) {
-        Random rand = new Random();
-        float x, y;
-
-        for (float[] point : getAfroBallCoords(headCenter)) {
+    /**
+     * Helper method for onDraw. Draws the afro hairstyle option
+     *
+     * @param canvas    the canvas to draw on
+     */
+    private void drawAfro(Canvas canvas) {
+        //drawing a circle at each point in afroPoints, with enough points this might look like an afro
+        for (float[] point : afroPoints) {
+            //some points are (0, 0) because setAfroPoints doesn't set every point in afroPoints to something
             if (point[0] != 0 && point[1] != 0) {
                 canvas.drawCircle(point[0], point[1], afroRadius, hairColorPaint);
             }
         }
     }
 
-    private float[][] getAfroBallCoords(float[] headCenter) {
+    /**
+     * sets up points that the drawAfro method will use to draw circles
+     */
+    private void setAfroBallCoords() {
         Random rand = new Random();
-        float[][] points = new float[500][2];
-        float x, y, a, b;
+        float x, y;
 
-        float[] origin = {headCenter[0], headCenter[1] - (faceHeight / 3f)};
-
-        for (int i = 0; i < points.length; i++) {
+        for (int i = 0; i < afroPoints.length; i++) {
+            //making random coordinates in a box of space just above the face's eyes
             x = (float) rand.nextInt((int) (faceWidth - (2.5f * faceMargin))) + (headCenter[0] - (faceWidth / 2f) + (1.25f * faceMargin));
-            y = (float) rand.nextInt((int) ((headCenter[1] - (faceHeight / 4f)) - (5f * faceMargin))) + (4.5f * faceMargin);
-            a = x - origin[0];
-            b = y - origin[1];
+            y = (float) rand.nextInt((int) ((headCenter[1] - (faceHeight / 4f)) - (3f * faceMargin))) + (3f * faceMargin);
 
-            if (Math.pow(a, 2) + Math.pow(b, 2) <= Math.pow(8f * faceMargin, 2)) {
-                points[i][0] = x;
-                points[i][1] = y;
-            }
+            afroPoints[i][0] = x;
+            afroPoints[i][1] = y;
         }
-        return points;
     }
 
     public int getHairColor() {
@@ -252,5 +277,9 @@ public class Face extends SurfaceView {
     public void setSkinColor(int skinColor) {
         this.skinColor = skinColor;
         skinColorPaint.setColor(this.skinColor);
+    }
+
+    public void setHairStyle(int hairStyle) {
+        this.hairStyle = hairStyle;
     }
 }

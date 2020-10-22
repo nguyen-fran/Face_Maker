@@ -22,6 +22,8 @@ public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarCh
         this.redSeekBar = redSeekBar;
         this.greenSeekBar = greenSeekBar;
         this.blueSeekBar = blueSeekBar;
+
+        this.whichRadioButton = HAIR;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarCh
          */
         switch (view.getId()) {
             case R.id.randomFaceButton:
-                faceView.randomizeColors();
+                faceView.randomizeFace();
                 break;
             case R.id.hairRadioButton:
                 redSeekBar.setProgress(Color.red(faceView.getHairColor()));
@@ -64,7 +66,9 @@ public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarCh
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
+        //change which hairstyle to draw
+        faceView.setHairStyle(pos);
+        faceView.invalidate();
     }
 
     @Override
@@ -74,11 +78,15 @@ public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarCh
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean userClicked) {
+        //avoids the colors changing because the user presses a radio button
         if (!userClicked) {
             return;
         }
+        Log.i("seekbar", "entered emthod");
 
+        //sets the int color value only in the color of the SeekBar being used and which radio button is selected
         if (whichRadioButton == HAIR && seekBar.getId() == R.id.redSeekBar) {
+            Log.i("seekbar", "changed red on hair");
             faceView.setHairColor(Color.argb(Face.MAX_RGB_VALUE, progress, Color.green(faceView.getHairColor()), Color.blue(faceView.getHairColor())));
         } else if (whichRadioButton == HAIR && seekBar.getId() == R.id.greenSeekBar) {
             faceView.setHairColor(Color.argb(Face.MAX_RGB_VALUE, Color.red(faceView.getHairColor()), progress, Color.blue(faceView.getHairColor())));

@@ -16,7 +16,7 @@ import android.widget.Spinner;
  */
 public class MainActivity extends AppCompatActivity {
 
-    String[] hairstyles = {"Bald", "Buzzcut", "Bowl cut", "Dreadlocks", "Man-bun", "Mullet"};
+    String[] hairstyles = {"Afro", "Bald", "Bowl cut", "Spikes"};
 
     private Spinner hairstyleSpinner;
     private Button randomFaceButton;
@@ -52,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
         greenSeekBar = findViewById(R.id.greenSeekBar);
         blueSeekBar = findViewById(R.id.blueSeekBar);
 
+        /**
+         * External Citation
+         * Date:    20 October 2020
+         * Problem: Needed the radio buttons to change the seekbars' progress
+         *
+         * Resource:    https://learning.up.edu/moodle/pluginfile.php/1372746/mod_folder/content/0/ListenerExample.java?forcedownload=1
+         * Solution:    I was reminded that the controller class could take in Views as parameters
+         *              for its constructor and thereby have Views interact
+         */
         faceView = findViewById(R.id.faceSurfaceView);
         faceController = new FaceController(faceView, redSeekBar, greenSeekBar, blueSeekBar);
 

@@ -32,7 +32,7 @@ public class FaceController implements View.OnClickListener, SeekBar.OnSeekBarCh
          * Problem: Needed to find a way to tell which button was pressed
          *
          * Resource:    https://stackoverflow.com/questions/3412180/how-to-determine-which-button-pressed-on-android
-         * Solution:    I used
+         * Solution:    I used their code but put it in a switch case instead
          */
         switch (view.getId()) {
             case R.id.randomFaceButton:
